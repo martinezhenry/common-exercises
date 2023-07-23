@@ -4,6 +4,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>unit-tests</module>
+        <module>performance/java</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
