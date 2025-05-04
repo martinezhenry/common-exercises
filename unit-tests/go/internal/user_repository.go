@@ -1,6 +1,8 @@
 package internal
 
-import "github.com/jmoiron/sqlx"
+import (
+	"database/sql"
+)
 
 type UserRepository interface {
 	GetUserByID(id string) (User, error)
@@ -16,10 +18,16 @@ type User struct {
 }
 
 type userRepository struct {
-	db	  *sqlx.DB
+	db	  SQLDatabase
 }
 
-func NewUserRepository(db *sqlx.DB) UserRepository {
+type SQLDatabase interface {
+	Get(dest interface{}, query string, args ...interface{}) error
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	Select(dest interface{}, query string, args ...interface{}) error
+}
+
+func NewUserRepository(db SQLDatabase) UserRepository {
 	return &userRepository{
 		db : db,
 	}

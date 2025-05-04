@@ -8,6 +8,8 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/martinezhenry/common-exercises/unit-tests/go/internal"
+
+ 	_ "github.com/mattn/go-sqlite3"
 )
 
 type App interface {
