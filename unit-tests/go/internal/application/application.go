@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/martinezhenry/common-exercises/unit-tests/go/internal/storage"
+	"github.com/jmoiron/sqlx"
+
 	"github.com/martinezhenry/common-exercises/unit-tests/go/internal"
 )
 
@@ -36,10 +37,19 @@ func (a *app) Run() error {
 }
 
 func NewApplication() App {
-	// Initialize the storage
-	storage := storage.NewMemoryStorage[string, internal.User]()
+	// Initialize the db connection
+	db, err := sqlx.Connect("sqlite3", "file::memory:?cache=shared")
+	if err != nil {
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
+	}
+	// Create the users table
+	_, err = db.Exec("CREATE TABLE users (id TEXT PRIMARY KEY, name TEXT, age INTEGER)")
+	if err != nil {
+		panic(fmt.Sprintf("failed to create table: %v", err))
+	}
+	
 	// Initialize the user repository with the storage
-	userRepository := internal.NewUserRepository(storage)
+	userRepository := internal.NewUserRepository(db)
 
 	server := http.NewServeMux()
 
